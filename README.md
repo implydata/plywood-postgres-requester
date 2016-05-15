@@ -1,6 +1,6 @@
 # plywood-postgres-requester
 
-This is the [Postgres](https://www.postgres.com/) requester making abstraction layer for [plywood](https://github.com/implydata/plywood).
+This is the [Postgres](http://www.postgresql.org/) requester making abstraction layer for [plywood](https://github.com/implydata/plywood).
 
 Given a Postgres query and an optional context it return a Q promise that resolves to the data table.
 
