@@ -27,7 +27,7 @@ postgresRequester = postgresRequesterGenerator({
 })
 
 postgresRequester({
-  query: 'SELECT `cut` AS "Cut", sum(`price`) AS "TotalPrice" FROM `diamonds` GROUP BY `cut`;'
+  query: 'SELECT "cut" AS "Cut", sum("price") AS "TotalPrice" FROM "diamonds" GROUP BY "cut";'
 })
   .then(function(res) {
     console.log("The first row is:", res[0])
