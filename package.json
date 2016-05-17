@@ -1,6 +1,6 @@
 {
   "name": "plywood-postgres-requester",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Postgres requester for Plywood (within node)",
   "keywords": [
     "postgres",
