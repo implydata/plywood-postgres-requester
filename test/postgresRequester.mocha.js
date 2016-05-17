@@ -111,5 +111,22 @@ describe("Postgres requester", function() {
         })
         .done();
     })
+
+    it.only("works correctly with count", (testComplete) => {
+      postgresRequester({
+        query: `SELECT COUNT(*) AS "__VALUE__" FROM "wikipedia" WHERE ("cityName" IS NOT DISTINCT FROM 'El Paso')`
+      })
+        .then((res) => {
+          expect(res).to.deep.equal([
+            {
+              "__VALUE__": 2
+            }
+          ]);
+          testComplete();
+        })
+        .done();
+    })
+
   });
+
 });

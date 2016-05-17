@@ -11,7 +11,8 @@ import Q = require('q');
 
 import * as parseDateUTC from 'postgres-date-utc';
 
-pgTypes.setTypeParser(1700, pgTypes.getTypeParser(700));
+pgTypes.setTypeParser(1700, pgTypes.getTypeParser(700)); // numeric same as double
+pgTypes.setTypeParser(20, pgTypes.getTypeParser(21)); // big int same as int
 pgTypes.setTypeParser(1082, parseDateUTC); // date
 pgTypes.setTypeParser(1114, parseDateUTC); // timestamp without timezone
 pgTypes.setTypeParser(1184, parseDateUTC); // timestamp
