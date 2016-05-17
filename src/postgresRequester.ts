@@ -1,5 +1,6 @@
 /// <reference path="../typings/pg/pg.d.ts" />
 /// <reference path="../typings/pg-types/pg-types.d.ts" />
+/// <reference path="../typings/postgres-date-utc/postgres-date-utc.d.ts" />
 /// <reference path="../typings/q/Q.d.ts" />
 /// <reference path="../definitions/locator.d.ts" />
 /// <reference path="../definitions/requester.d.ts" />
@@ -8,7 +9,13 @@ import pg = require("pg");
 import pgTypes = require("pg-types");
 import Q = require('q');
 
+import * as parseDateUTC from 'postgres-date-utc';
+
 pgTypes.setTypeParser(1700, pgTypes.getTypeParser(700));
+pgTypes.setTypeParser(1082, parseDateUTC); // date
+pgTypes.setTypeParser(1114, parseDateUTC); // timestamp without timezone
+pgTypes.setTypeParser(1184, parseDateUTC); // timestamp
+// ToDo: fix date array also
 
 export interface PostgresRequesterParameters {
   locator?: Locator.PlywoodLocator;

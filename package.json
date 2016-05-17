@@ -23,8 +23,9 @@
     "prepublish": "./prepublish"
   },
   "dependencies": {
-    "q": "1.4.1",
-    "pg": "4.5.5"
+    "pg": "4.5.5",
+    "postgres-date-utc": "1.0.3",
+    "q": "1.4.1"
   },
   "devDependencies": {
     "chai": "3.5.0",

@@ -97,7 +97,7 @@ describe("Postgres requester", function() {
         .done();
     });
 
-    it.skip("works correctly with time", (testComplete) => {
+    it("works correctly with time", (testComplete) => {
       postgresRequester({
         query: `SELECT MAX("time") AS "MaxTime" FROM "wikipedia"`
       })
