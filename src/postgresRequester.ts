@@ -35,7 +35,7 @@ function basicLocator(host: string): Locator.PlywoodLocator {
     port = Number(hostnamePort[1]);
   } else {
     hostname = hostnamePort[0];
-    port = 3306;
+    port = 5432;
   }
   return () => {
     return Q({
