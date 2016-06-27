@@ -23,15 +23,15 @@
     "prepublish": "./prepublish"
   },
   "dependencies": {
-    "pg": "4.5.5",
+    "pg": "6.0.1",
     "postgres-date-utc": "1.0.3",
     "q": "1.4.1"
   },
   "devDependencies": {
     "chai": "3.5.0",
     "dts-bundle": "0.4.3",
-    "mocha": "2.4.5",
-    "tslint": "3.10.2",
+    "mocha": "2.5.3",
+    "tslint": "3.12.1",
     "typescript": "1.8.10"
   }
 }
