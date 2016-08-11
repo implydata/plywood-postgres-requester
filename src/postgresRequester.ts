@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-/// <reference path="../typings/pg/pg.d.ts" />
-/// <reference path="../typings/pg-types/pg-types.d.ts" />
-/// <reference path="../typings/postgres-date-utc/postgres-date-utc.d.ts" />
-/// <reference path="../typings/q/Q.d.ts" />
-/// <reference path="../definitions/locator.d.ts" />
-/// <reference path="../definitions/requester.d.ts" />
+/// <reference path="../typings/requester.d.ts" />
+/// <reference path="../typings/locator.d.ts" />
+/// <reference path="../typings/pg-types.d.ts" />
+/// <reference path="../typings/postgres-date-utc.d.ts" />
 
 import pg = require("pg");
 import pgTypes = require("pg-types");
@@ -83,8 +81,8 @@ export function postgresRequesterFactory(parameters: PostgresRequesterParameters
           user: user,
           password: password,
 
-          parseInputDatesAsUTC: true
-        });
+          parseInputDatesAsUTC: true // not in the type
+        } as any);
 
         client.on('drain', client.end.bind(client)); //disconnect client when all queries are finished
         client.connect();
