@@ -19,10 +19,9 @@
 /// <reference path="../typings/pg-types.d.ts" />
 /// <reference path="../typings/postgres-date-utc.d.ts" />
 
-import pg = require("pg");
-import pgTypes = require("pg-types");
-import Q = require('q');
-
+import * as Q from 'q-tsc';
+import * as pg from "pg";
+import * as pgTypes from "pg-types";
 import * as parseDateUTC from 'postgres-date-utc';
 
 pgTypes.setTypeParser(1700, pgTypes.getTypeParser(700)); // numeric same as double

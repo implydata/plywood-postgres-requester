@@ -18,19 +18,18 @@
   "main": "build/postgresRequester.js",
   "typings": "build/postgresRequester.d.ts",
   "scripts": {
-    "prepublish": "./prepublish"
+    "compile": "./compile"
   },
   "dependencies": {
     "pg": "6.1.0",
     "postgres-date-utc": "1.0.3",
-    "q": "1.4.1"
+    "q-tsc": "1.4.1-rev1"
   },
   "devDependencies": {
-    "@types/pg": "0.0.29",
-    "@types/q": "0.0.28",
+    "@types/pg": "0.0.31",
     "chai": "3.5.0",
     "mocha": "3.0.2",
-    "tslint": "3.14.0",
+    "tslint": "3.15.1",
     "typescript": "2.0.0"
   }
 }
