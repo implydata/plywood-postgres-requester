@@ -16,10 +16,8 @@
 
 /// <reference path="../typings/requester.d.ts" />
 /// <reference path="../typings/locator.d.ts" />
-/// <reference path="../typings/pg-types.d.ts" />
-/// <reference path="../typings/postgres-date-utc.d.ts" />
 
-import * as Q from 'q-tsc';
+import * as Q from 'q';
 import * as pg from "pg";
 import * as pgTypes from "pg-types";
 import * as parseDateUTC from 'postgres-date-utc';

@@ -17,19 +17,26 @@
   },
   "main": "build/postgresRequester.js",
   "typings": "build/postgresRequester.d.ts",
+  "files": [
+    "build/",
+    "typings/"
+  ],
   "scripts": {
+    "prepublish": "node_modules/.bin/tdi",
     "compile": "./compile"
   },
   "dependencies": {
     "pg": "6.1.0",
     "postgres-date-utc": "1.0.3",
-    "q-tsc": "1.4.1-rev1"
+    "q": "1.4.1"
   },
   "devDependencies": {
-    "@types/pg": "0.0.31",
+    "@types/mocha": "2.2.32",
+    "@types/node": "6.0.41",
     "chai": "3.5.0",
-    "mocha": "3.0.2",
+    "mocha": "3.1.0",
+    "tdi": "0.1.2",
     "tslint": "3.15.1",
-    "typescript": "2.0.0"
+    "typescript": "2.0.3"
   }
 }
