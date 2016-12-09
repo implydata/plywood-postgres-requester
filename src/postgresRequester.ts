@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-/// <reference path="../typings/requester.d.ts" />
-/// <reference path="../typings/locator.d.ts" />
-
-import * as Q from 'q';
-import * as pg from "pg";
-import * as pgTypes from "pg-types";
+import * as Promise from 'any-promise';
+import { PlywoodRequester, PlywoodLocator, basicLocator } from 'plywood-base-api';
+import { Readable } from 'stream';
+import * as pg from 'pg';
+import * as pgTypes from 'pg-types';
 import * as parseDateUTC from 'postgres-date-utc';
 
 pgTypes.setTypeParser(1700, pgTypes.getTypeParser(700)); // numeric same as double
@@ -30,48 +29,37 @@ pgTypes.setTypeParser(1184, parseDateUTC); // timestamp
 // ToDo: fix date array also
 
 export interface PostgresRequesterParameters {
-  locator?: Locator.PlywoodLocator;
+  locator?: PlywoodLocator;
   host?: string;
   user: string;
   password: string;
   database: string;
 }
 
-function basicLocator(host: string): Locator.PlywoodLocator {
-  var hostnamePort = host.split(':');
-  var hostname: string;
-  var port: number;
-  if (hostnamePort.length > 1) {
-    hostname = hostnamePort[0];
-    port = Number(hostnamePort[1]);
-  } else {
-    hostname = hostnamePort[0];
-    port = 5432;
-  }
-  return () => {
-    return Q({
-      hostname: hostname,
-      port: port
-    });
-  };
-}
-
-export function postgresRequesterFactory(parameters: PostgresRequesterParameters): Requester.PlywoodRequester<string> {
-  var locator = parameters.locator;
+export function postgresRequesterFactory(parameters: PostgresRequesterParameters): PlywoodRequester<string> {
+  let locator = parameters.locator;
   if (!locator) {
-    var host = parameters.host;
+    let host = parameters.host;
     if (!host) throw new Error("must have a `host` or a `locator`");
-    locator = basicLocator(host);
+    locator = basicLocator(host, 5432);
   }
-  var user = parameters.user;
-  var password = parameters.password;
-  var database = parameters.database;
+  let user = parameters.user;
+  let password = parameters.password;
+  let database = parameters.database;
 
-  return (request): Q.Promise<any[]> => {
-    var query = request.query;
-    return locator()
+  return (request): Readable => {
+    let query = request.query;
+
+    // options = options || {};
+    // options.objectMode = true;
+    let stream = new Readable({
+      objectMode: true,
+      read: function() {}
+    });
+
+    locator()
       .then((location) => {
-        var client = new pg.Client({
+        let client = new pg.Client({
           host: location.hostname,
           port: location.port || 5432,
           database: database,
@@ -81,21 +69,28 @@ export function postgresRequesterFactory(parameters: PostgresRequesterParameters
           parseInputDatesAsUTC: true // not in the type
         } as any);
 
-        client.on('drain', client.end.bind(client)); //disconnect client when all queries are finished
+        client.on('drain', client.end.bind(client)); // disconnect client when all queries are finished
         client.connect();
 
-        var deferred = <Q.Deferred<any[]>>(Q.defer());
-
         //query is executed once connection is established and PostgreSQL server is ready for a query
-        client.query(query, function(err, result) {
-          if (err) {
-            deferred.reject(err);
-          } else {
-            deferred.resolve(result.rows);
-          }
+        let q = client.query(query);
+
+        q.on('row', function(row: any) {
+          stream.push(row);
         });
 
-        return deferred.promise;
+        q.on('error', function(err: any) {
+          stream.emit('error', err);  // Pass on any errors
+        });
+
+        q.on('end', function() {
+          stream.push(null);  // pushing null, indicating EOF
+        });
+      })
+      .catch((err: Error) => {
+        stream.emit('error', err);  // Pass on any errors
       });
+
+    return stream;
   };
 }

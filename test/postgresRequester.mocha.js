@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-var { expect } = require("chai");
+const { expect } = require("chai");
+const toArray = require("stream-to-array");
 
-var { postgresRequesterFactory } = require('../build/postgresRequester');
+const { postgresRequesterFactory } = require('../build/postgresRequester');
 
-var info = require('./info');
+const info = require('./info');
 
-var postgresRequester = postgresRequesterFactory({
+const postgresRequester = postgresRequesterFactory({
   host: info.postgresHost,
   database: info.postgresDatabase,
   user: info.postgresUser,
@@ -37,39 +38,73 @@ describe("Postgres requester", function() {
       }).to.throw('must have a `host` or a `locator`');
     });
 
-    it("correct error for bad table", (testComplete) => {
-      postgresRequester({
+    it("correct error for bad table", () => {
+      let stream = postgresRequester({
         query: "SELECT * FROM not_a_real_datasource"
-      })
+      });
+
+      return toArray(stream)
         .then(() => {
           throw new Error('DID_NOT_ERROR');
         })
         .catch((err) => {
           expect(err.message).to.contain("not_a_real_datasource");
-          testComplete();
-        })
-        .done();
+        });
     });
   });
 
 
   describe("basic working", function() {
-    it("runs a metadata query", (testComplete) => {
-      postgresRequester({
+    it("runs a metadata query", () => {
+      let stream = postgresRequester({
         query: "select column_name, udt_name from INFORMATION_SCHEMA.COLUMNS where table_name = 'wikipedia';"
-      })
+      });
+
+      return toArray(stream)
         .then((res) => {
-          expect(res.length).to.equal(26);
-          testComplete();
-        })
-        .done();
+          expect(res.map(r => {
+            return r.column_name + ' ~ ' + r.udt_name;
+          })).to.deep.equal([
+            "time ~ timestamp",
+            "sometimeLater ~ timestamp",
+            "channel ~ varchar",
+            "cityName ~ varchar",
+            "comment ~ varchar",
+            "commentLength ~ int4",
+            "commentLengthStr ~ varchar",
+            "countryIsoCode ~ varchar",
+            "countryName ~ varchar",
+            "deltaBucket100 ~ int4",
+            "isAnonymous ~ bool",
+            "isMinor ~ bool",
+            "isNew ~ bool",
+            "isRobot ~ bool",
+            "isUnpatrolled ~ bool",
+            "metroCode ~ int4",
+            "namespace ~ varchar",
+            "page ~ varchar",
+            "regionIsoCode ~ varchar",
+            "regionName ~ varchar",
+            "user ~ varchar",
+            "userChars ~ _bpchar",
+            "count ~ int8",
+            "added ~ int8",
+            "deleted ~ int8",
+            "delta ~ int8",
+            "min_delta ~ int4",
+            "max_delta ~ int4",
+            "deltaByTen ~ float8"
+          ]);
+        });
     });
 
 
-    it("runs a SELECT / GROUP BY", (testComplete) => {
-      postgresRequester({
+    it("runs a SELECT / GROUP BY", () => {
+      let stream = postgresRequester({
         query: `SELECT "channel" AS "Channel", sum("added") AS "TotalAdded", sum("deleted") AS "TotalDeleted" FROM "wikipedia" WHERE "cityName" = 'Tokyo' GROUP BY "channel" ORDER BY "channel";`
-      })
+      });
+
+      return toArray(stream)
         .then((res) => {
           expect(res).to.deep.equal([
             {
@@ -108,39 +143,37 @@ describe("Postgres requester", function() {
               "TotalDeleted": 21
             }
           ]);
-          testComplete();
-        })
-        .done();
+        });
     });
 
-    it("works correctly with time", (testComplete) => {
-      postgresRequester({
+    it("works correctly with time", () => {
+      let stream = postgresRequester({
         query: `SELECT MAX("time") AS "MaxTime" FROM "wikipedia"`
-      })
+      });
+
+      return toArray(stream)
         .then((res) => {
           expect(res).to.deep.equal([
             {
               "MaxTime": new Date('2015-09-12T23:59:00.000Z')
             }
           ]);
-          testComplete();
-        })
-        .done();
-    })
+        });
+    });
 
-    it.only("works correctly with count", (testComplete) => {
-      postgresRequester({
+    it("works correctly with count", () => {
+      let stream = postgresRequester({
         query: `SELECT COUNT(*) AS "__VALUE__" FROM "wikipedia" WHERE ("cityName" IS NOT DISTINCT FROM 'El Paso')`
-      })
+      });
+
+      return toArray(stream)
         .then((res) => {
           expect(res).to.deep.equal([
             {
               "__VALUE__": 2
             }
           ]);
-          testComplete();
-        })
-        .done();
+        });
     })
 
   });
