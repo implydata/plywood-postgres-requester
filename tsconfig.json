@@ -8,6 +8,7 @@
     "noImplicitReturns": true,
     "strictNullChecks": false,
     "skipLibCheck": false,
+    "importHelpers": true,
     "target": "es5",
     "rootDir": "src",
     "outDir": "build",
