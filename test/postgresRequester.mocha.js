@@ -65,7 +65,7 @@ describe("Postgres requester", function() {
           expect(res.map(r => {
             return r.column_name + ' ~ ' + r.udt_name;
           })).to.deep.equal([
-            "time ~ timestamp",
+            "__time ~ timestamp",
             "sometimeLater ~ timestamp",
             "channel ~ varchar",
             "cityName ~ varchar",
@@ -148,7 +148,7 @@ describe("Postgres requester", function() {
 
     it("works correctly with time", () => {
       let stream = postgresRequester({
-        query: `SELECT MAX("time") AS "MaxTime" FROM "wikipedia"`
+        query: `SELECT MAX("__time") AS "MaxTime" FROM "wikipedia"`
       });
 
       return toArray(stream)
