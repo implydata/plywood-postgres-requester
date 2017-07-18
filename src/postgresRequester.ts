@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import * as Promise from 'any-promise';
 import { PlywoodRequester, PlywoodLocator, basicLocator } from 'plywood-base-api';
 import { Readable } from 'stream';
-import * as pg from 'pg';
+import { Client, Query } from 'pg';
 import * as pgTypes from 'pg-types';
 import * as parseDateUTC from 'postgres-date-utc';
 
@@ -59,7 +58,7 @@ export function postgresRequesterFactory(parameters: PostgresRequesterParameters
 
     locator()
       .then((location) => {
-        let client = new pg.Client({
+        let client = new Client({
           host: location.hostname,
           port: location.port || 5432,
           database: database,
@@ -73,8 +72,9 @@ export function postgresRequesterFactory(parameters: PostgresRequesterParameters
         client.connect();
 
         //query is executed once connection is established and PostgreSQL server is ready for a query
-        let q = client.query(query);
+        let q = client.query(new (Query as any)(query) as any);
 
+        // ToDo: use node-pg-cursor or node-pg-query-stream here instead
         q.on('row', function(row: any) {
           stream.push(row);
         });
