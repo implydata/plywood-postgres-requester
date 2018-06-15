@@ -28,18 +28,18 @@
     "test": "mocha"
   },
   "dependencies": {
-    "pg": "^7.0.1",
+    "pg": "^7.4.3",
     "postgres-date-utc": "^1.0.3",
-    "plywood-base-api": "^0.2.7"
+    "plywood-base-api": "^0.2.8"
   },
   "devDependencies": {
-    "@types/mocha": "2.2.41",
-    "@types/node": "8.0.14",
-    "chai": "4.1.0",
-    "mocha": "3.4.2",
+    "@types/mocha": "5.2.2",
+    "@types/node": "10.3.3",
+    "chai": "4.1.2",
+    "mocha": "5.2.0",
     "stream-to-array": "2.3.0",
-    "tdi": "0.3.10",
-    "tslint": "5.5.0",
-    "typescript": "2.4.1"
+    "tdi": "0.5.6",
+    "tslint": "5.10.0",
+    "typescript": "2.9.2"
   }
 }
